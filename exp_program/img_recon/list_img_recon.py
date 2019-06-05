@@ -50,7 +50,7 @@ def main(f,F2P_flg,CentS_flg,log):
 	FBP.main(inter_f,f_name)
 	fin_time = time.time()
 
-	print("FanPara_Transform.py : {}sec".format(fin_time - start_time), file=log)
+	print("FBP_sinogram.py : {}sec".format(fin_time - start_time), file=log)
 	sum_time += fin_time - start_time
 
 	print("Time of All function : {}sec".format(sum_time), file = log)
