@@ -24,8 +24,15 @@ def main(f,f_name):
 	#中心推定および補正関数の実行
 	input_f = cv2.imread(f,-1)
 	L,R = center_detect(input_f)
+
 	input_f = cv2.imread(f,-1)
-	centered_f = centering(input_f,L,R)
+	print((L,R))
+	center = (R+L)/2
+	log = open('centerlog.txt','w')
+	print("~Image Reconstruction : Sino Center log~", file=log)
+	print("-------------\n ===" + str(center), file=log)
+
+	centered_f = centering(input_f,center)
 	cv2.imwrite("CENT_img" + os.sep + "Centered.tif", centered_f.astype(np.uint16))
 
 	func_time.append(time.time())
@@ -33,13 +40,8 @@ def main(f,f_name):
 
 #center_detectで得た物体の端のピクセルから中心計算、画像を平行移動して出力
 #入力:画像(numpy行列) 物体の端のピクセル(平均値), 出力:画像(numpy行列)
-def centering(I_im,L,R):
+def centering(I_im,center):
 	#rows,cols,ch = I_im.shape
-	print((L,R))
-
-	center = (R+L)/2
-
-	#print(center)
 
 	#画像移動用のアフィン変換に用いる、変換行列の計算
 	M = np.float32([[1,0,(I_im.shape[1]/2 - center)],[0,1,0]])
