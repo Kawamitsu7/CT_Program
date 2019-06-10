@@ -12,7 +12,7 @@ import Check as CH
 
 func_time = []
 
-def main(f,f_name):
+def main(f,f_name,flg,center):
 	print(f_name)
 
 	global func_time
@@ -22,16 +22,17 @@ def main(f,f_name):
 	os.makedirs("CENT_img", exist_ok = True)
 
 	#中心推定および補正関数の実行
-	input_f = cv2.imread(f,-1)
-	L,R = center_detect(input_f)
+	if flg == 0:
+		input_f = cv2.imread(f,-1)
+		L,R = center_detect(input_f)
+
+		print((L,R))
+		center = (R+L)/2
+		log = open('centerlog.txt','w')
+		print("~Image Reconstruction : Sino Center log~", file=log)
+		print("-------------\n ===" + str(center), file=log)
 
 	input_f = cv2.imread(f,-1)
-	print((L,R))
-	center = (R+L)/2
-	log = open('centerlog.txt','w')
-	print("~Image Reconstruction : Sino Center log~", file=log)
-	print("-------------\n ===" + str(center), file=log)
-
 	centered_f = centering(input_f,center)
 	cv2.imwrite("CENT_img" + os.sep + "Centered.tif", centered_f.astype(np.uint16))
 

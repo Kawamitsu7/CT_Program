@@ -15,7 +15,7 @@ import FBP_Sinogram as FBP
 # -*- All in One program -*-
 # src_img(Sinogram) -> FanPara_Trans -> Centering_Sino -> FBP(Filtering -> BP) -> dst_img(reconstructed tomography)
 
-def main(f,F2P_flg,CentS_flg,log):
+def main(f,F2P_flg,CentS_flg,log,flgCentS,center):
 	start_time = 0
 	fin_time = 0
 	func_time = 0
@@ -38,7 +38,7 @@ def main(f,F2P_flg,CentS_flg,log):
 
 	#Centering_Sino
 	if CentS_flg == 1:
-		func_time = CenS.main(inter_f,f_name)
+		func_time = CenS.main(inter_f,f_name,flgCentS,center)
 		inter_f = "CENT_img" + os.sep + "Centered.tif"
 
 	print("Centering_Sino.py : {}sec".format(func_time), file=log)
@@ -69,8 +69,14 @@ if __name__ == "__main__":
 	isF2P = int(input("ファンパラ変換を行うか選択 (0:実行しない 1:実行する) >>>"))
 	isCentS = int(input("サイノグラム中心補正を行うか選択 (0:実行しない 1:実行する) >>>"))
 
+	flgCentS = 0
+	center = 0.0
+	if isCentS == 1:
+		flgCentS = int(input("中心補正:1枚ずつ-->0 まとめてやる-->1 >>>"))
+		center = float(input("まとめて中心の値指定 >>>"))
+
 	for f in files:
 		print("-------------\n ==="+ os.path.basename(f) +"===", file=log)
-		main(f,isF2P,isCentS,log)
+		main(f,isF2P,isCentS,log,flgCentS,center)
 
 	log.close()
