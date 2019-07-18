@@ -20,7 +20,7 @@ def filtering(I_im):
 	T_im = np.zeros((I_im.shape[0], I_im.shape[1]))
 
 	for a in range(I_im.shape[0]):
-		print("Filtering : " + str(a) + "行目")
+		#print("Filtering : " + str(a) + "行目")
 		for_filtering_data = np.copy(I_im[a, :])
 		fft_data = np.fft.fft(for_filtering_data, I_im.shape[1])
 		omega = np.fft.fftfreq(I_im.shape[1], 1)
@@ -43,7 +43,7 @@ def filtering(I_im):
 
 	# cv2.imwrite("fil_img" + os.sep + "Filtered_img.tif", O_im.astype(np.uint16))
 	O_im = T_im
-	print(O_im.dtype)
+	# print(O_im.dtype)
 	return O_im
 
 # quit()

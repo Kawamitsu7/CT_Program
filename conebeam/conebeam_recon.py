@@ -8,6 +8,7 @@ import time
 import proj_mask as PM
 import Filtering_Proj as Fil_P
 import linear_transform as LI
+import ConeBeam_BP as CBBP
 
 # -*- All in One program -*-
 # src_img -> masking -> Filtering -> weighted-BP -> dst_img
@@ -33,7 +34,10 @@ if __name__ == "__main__":
 	# 	center = float(input("まとめて中心の値指定 >>>"))
 
 	print("-----------", file=log)
+	fil_arr = []
+
 	start_time = time.time()
+	iter_count = 0
 
 	for f in files:
 		# ファイル名の調整
@@ -48,8 +52,15 @@ if __name__ == "__main__":
 		LI.linear_transform_calc(filtered, O_im, np.amin(filtered), np.amax(filtered))
 		cv2.imwrite("fil_img" + os.sep + "Filtered_" + f_name + ".tif", O_im.astype(np.uint16))
 
+		fil_arr.append(filtered)
+		iter_count += 1
+		print(str(iter_count) + "枚目 Filtered")
+
 	end_time = time.time()
 
 	print("project_masking & filtering : {}sec".format(end_time - start_time), file=log)
+
+	# 逆投影パート
+	CBBP.Cone_BP(fil_arr)
 
 	log.close()

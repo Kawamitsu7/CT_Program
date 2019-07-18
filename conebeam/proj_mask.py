@@ -14,7 +14,7 @@ def main(f):
 	# 距離 : 線源 --> 検出器
 	Ld = 12 / 100
 
-	input_f = cv2.imread(f, -1)
+	input_f = cv2.bitwise_not(cv2.imread(f, -1))
 
 	# 検出器1個当たりの大きさ
 	px_size = 83 / 1000000 * (1280 / input_f.shape[1])
@@ -38,6 +38,9 @@ def Masking(I_im, Lo, Ld, px_size):
 
 		for Xp in range(I_im.shape[1]):
 			X = Calc_coordinate(Xp, px_size, I_im.shape[1])
+
+			# 重み計算
+			# Loの代わりにLdを使うべき？
 			dst[Zp, Xp] = 1.0 * I_im[Zp, Xp] * Lo / math.sqrt(Lo*Lo + X*X + Z*Z)
 
 	return dst
