@@ -57,10 +57,15 @@ if __name__ == "__main__":
 		print(str(iter_count) + "枚目 Filtered")
 
 	end_time = time.time()
-
 	print("project_masking & filtering : {}sec".format(end_time - start_time), file=log)
 
 	# 逆投影パート
+	print("-----------", file=log)
+	start_time = time.time()
+
 	CBBP.Cone_BP(fil_arr)
+
+	end_time = time.time()
+	print("Weighten Back Projection : {}sec".format(end_time - start_time), file=log)
 
 	log.close()

@@ -4,7 +4,7 @@ import numpy as np
 import os
 import glob
 import time
-
+import math
 
 def Cone_BP(files):
 	# ----------逆投影に必要なパラメータ準備----------
@@ -38,13 +38,56 @@ def Cone_BP(files):
 	# 再構成テーブルを作成
 	weighten_table, qu_table, qv_table = create_table(in_f.shape[1], in_f.shape[1], len(files), in_f.shape[0], sin_table, cos_table, Lo, Ld)
 
-	for f in files:
-		proj = cv2.imread(f, -1)
+	u_temp = 0
+	v_temp = 0
 
+	for z in range(Volume.shape[1]):
+		print("BP : {z}行目".format(z = z))
 		for x in range(Volume.shape[0]):
 			for y in range(Volume.shape[0]):
-				pass
+				for n in range(len(files)):
+					proj_val = 0.0
+					diff_u = 0.0
+					diff_v = 0.0
 
+					# 双線形補間
+					if qu_table[x,y,n] < in_f.shape[1] and qv_table[x,y,n,z] < in_f.shape[0]:
+						u_temp = qu_table[x,y,n]
+						v_temp = qv_table[x,y,n,z]
+
+						u = math.floor(u_temp)
+						v = math.floor(v_temp)
+						if u >= in_f.shape[1] - 1 and v >= in_f.shape[0] - 1:
+							proj_val = files[n][in_f.shape[0]-1,in_f.shape[1]-1]
+						elif u >= in_f.shape[1] - 1:
+							diff_v = v_temp - v
+							proj_val = (1-diff_v) * files[n][v,in_f.shape[1]-1] + diff_v * files[n][v+1,in_f.shape[1]-1]
+						elif v >= in_f.shape[0] - 1:
+							diff_u = u_temp - u
+							proj_val = (1-diff_u) * files[n][in_f.shape[0]-1,u] + diff_u * files[n][in_f.shape[0]-1,u+1]
+						else:
+							diff_u = u_temp - u
+							diff_v = v_temp - v
+							left_up = (1-diff_u) * (1-diff_v) * files[n][v,u]
+							left_down = (1-diff_u) * diff_v * files[n][v+1,u]
+							right_up = diff_u * (1-diff_v) * files[n][v,u+1]
+							right_down = diff_u * diff_v * files[n][v+1,u+1]
+							proj_val = left_up + left_down + right_up + right_down
+
+					Volume[x,y,z] += weighten_table[x,y,n] * proj_val
+
+	Normalized = normalize * Volume
+
+	Fixed = np.where(Normalized < 0, 0, Normalized)
+
+	Output = Cube_LI(Fixed)
+
+	np.round(Output)
+
+	# 画像書き出し
+	for i in range(Output.shape[2]):
+		to_img = Output[:,:,i]
+		cv2.imwrite("CB_BP" + os.sep + str(i) + "_BP.tif", to_img.astype(np.uint16))
 
 	print("End of Reconstruction")
 
@@ -71,28 +114,29 @@ def create_table(co_x,co_y,co_n,co_z,sin_arr,cos_arr,d,D):
 	u_table = np.zeros((co_x, co_y, co_n))
 	v_table = np.zeros((co_x, co_y, co_n, co_z))
 
-	for a in range(co_x):
-		print(str(a) + "行目のyとz計算")
-		x = -1 * co_x / 2 + a
+	for e in range(co_z):
+		print("table_calc" + str(e) + "行目")
+		z = co_z / 2 - e
 
-		for b in range(co_y):
-			y = co_y / 2 - b
+		for a in range(co_x):
+			x = -1 * co_x / 2 + a
 
-			for c in range(co_n):
-				sin = sin_arr[c]
-				cos = cos_arr[c]
+			for b in range(co_y):
+				y = co_y / 2 - b
 
-				W = d / (d - x * cos + y * sin)
-				w_table[a,b,c] = np.square(W)
+				for c in range(co_n):
+					sin = sin_arr[c]
+					cos = cos_arr[c]
 
-				U = D * (x * sin + y * cos) / (d - x * cos + y * sin)
-				if U < co_x / 2 and U > -1 * co_x / 2:
-					u_table[a, b, c] = U + co_x / 2
-				else:
-					u_table[a, b, c] = 2 * co_x
+					W = d / (d - x * cos + y * sin)
+					w_table[a,b,c] = np.square(W)
 
-				for e in range(co_z):
-					z = co_z / 2 - e
+					U = D * (x * sin + y * cos) / (d - x * cos + y * sin)
+					if U < co_x / 2 and U > -1 * co_x / 2:
+						u_table[a, b, c] = U + co_x / 2
+					else:
+						u_table[a, b, c] = 2 * co_x
+
 					V = D * z / (d - x * cos + y * sin)
 					if V < co_z / 2 and V > -1 * co_z / 2:
 						v_table[a, b, c, e] = (co_z / 2) - V
@@ -102,3 +146,13 @@ def create_table(co_x,co_y,co_n,co_z,sin_arr,cos_arr,d,D):
 
 	return w_table,u_table,v_table
 
+
+def Cube_LI(Vol):
+	floor = np.amin(Vol)
+	ceil = np.amax(Vol)
+
+	coefficient = 65535 /(ceil - floor)
+
+	temp = Vol - floor
+
+	return temp * coefficient
