@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import math
 import os
-import matplotlib.pyplot as plt
 import glob
 
 
@@ -14,7 +13,9 @@ def main(f):
 	# 距離 : 線源 --> 検出器
 	Ld = 12 / 100
 
+	# 画像読み込み : 元画像によって白黒反転の有無を以下の命令から選ぶ
 	input_f = cv2.bitwise_not(cv2.imread(f, -1))
+	# input_f = cv2.imread(f, -1)
 
 	# 検出器1個当たりの大きさ
 	px_size = 83 / 1000000 * (1280 / input_f.shape[1])

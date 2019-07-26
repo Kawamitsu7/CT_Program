@@ -2,9 +2,9 @@
 import cv2
 import numpy as np
 import os
-import glob
-import time
 import math
+from tqdm import tqdm, trange
+
 
 def Cone_BP(files):
 	# ----------逆投影に必要なパラメータ準備----------
@@ -27,56 +27,68 @@ def Cone_BP(files):
 	d_theta = 360.0 / len(files)
 
 	# 再構成のラストにかける正規化係数
-	normalize = 1.0 / (2 * np.pi * len(files))
+	# normalize = 1.0 / (2 * np.pi * len(files))
+	normalize = 1.0 / (2 * len(files))
 
-	sin_table, cos_table = sincos_calc(len(files),d_theta)
+	sin_table, cos_table = sincos_calc(len(files), d_theta)
 
 	# ----------ここまで----------
 
 	# ==========再構成処理本体==========
 
 	# 再構成テーブルを作成
-	weighten_table, qu_table, qv_table = create_table(in_f.shape[1], in_f.shape[1], len(files), in_f.shape[0], sin_table, cos_table, Lo, Ld)
+	weighten_table, qu_table, qv_table = create_table(in_f.shape[1], in_f.shape[1], len(files), in_f.shape[0],sin_table, cos_table, Lo, Ld, px_size)
 
 	u_temp = 0
 	v_temp = 0
 
-	for z in range(Volume.shape[1]):
-		print("BP : {z}行目".format(z = z))
+	# print(qu_table[20, 20, :])
+	# print(qv_table[20, 20, :, 45])
+
+	# デバッグ用(z軸方向中央付近で試す)
+	# z_list = [45]
+
+	for z in trange(Volume.shape[2], desc='W-BP', leave=True):
+		# for z in z_list:
+		# print("BP : {z}行目".format(z=z))
 		for x in range(Volume.shape[0]):
-			for y in range(Volume.shape[0]):
+			for y in range(Volume.shape[1]):
 				for n in range(len(files)):
 					proj_val = 0.0
 					diff_u = 0.0
 					diff_v = 0.0
 
 					# 双線形補間
-					if qu_table[x,y,n] < in_f.shape[1] and qv_table[x,y,n,z] < in_f.shape[0]:
-						u_temp = qu_table[x,y,n]
-						v_temp = qv_table[x,y,n,z]
+					if qu_table[x, y, n] < in_f.shape[1] and qv_table[x, y, n, z] < in_f.shape[0]:
+						u_temp = qu_table[x, y, n]
+						v_temp = qv_table[x, y, n, z]
 
 						u = math.floor(u_temp)
 						v = math.floor(v_temp)
 						if u >= in_f.shape[1] - 1 and v >= in_f.shape[0] - 1:
-							proj_val = files[n][in_f.shape[0]-1,in_f.shape[1]-1]
+							proj_val = files[n][in_f.shape[0] - 1, in_f.shape[1] - 1]
 						elif u >= in_f.shape[1] - 1:
 							diff_v = v_temp - v
-							proj_val = (1-diff_v) * files[n][v,in_f.shape[1]-1] + diff_v * files[n][v+1,in_f.shape[1]-1]
+							proj_val = (1 - diff_v) * files[n][v, in_f.shape[1] - 1] + diff_v * files[n][
+								v + 1, in_f.shape[1] - 1]
 						elif v >= in_f.shape[0] - 1:
 							diff_u = u_temp - u
-							proj_val = (1-diff_u) * files[n][in_f.shape[0]-1,u] + diff_u * files[n][in_f.shape[0]-1,u+1]
+							proj_val = (1 - diff_u) * files[n][in_f.shape[0] - 1, u] + diff_u * files[n][
+								in_f.shape[0] - 1, u + 1]
 						else:
 							diff_u = u_temp - u
 							diff_v = v_temp - v
-							left_up = (1-diff_u) * (1-diff_v) * files[n][v,u]
-							left_down = (1-diff_u) * diff_v * files[n][v+1,u]
-							right_up = diff_u * (1-diff_v) * files[n][v,u+1]
-							right_down = diff_u * diff_v * files[n][v+1,u+1]
+							left_up = (1 - diff_u) * (1 - diff_v) * files[n][v, u]
+							left_down = (1 - diff_u) * diff_v * files[n][v + 1, u]
+							right_up = diff_u * (1 - diff_v) * files[n][v, u + 1]
+							right_down = diff_u * diff_v * files[n][v + 1, u + 1]
 							proj_val = left_up + left_down + right_up + right_down
 
-					Volume[x,y,z] += weighten_table[x,y,n] * proj_val
+					Volume[x, y, z] += weighten_table[x, y, n] * proj_val
 
 	Normalized = normalize * Volume
+	# print("Max = " + str(np.amax(Normalized)) )
+	# print("min = " + str(np.amin(Normalized)) )
 
 	Fixed = np.where(Normalized < 0, 0, Normalized)
 
@@ -86,14 +98,15 @@ def Cone_BP(files):
 
 	# 画像書き出し
 	for i in range(Output.shape[2]):
-		to_img = Output[:,:,i]
+		# for i in z_list:
+		to_img = Output[:, :, i]
 		cv2.imwrite("CB_BP" + os.sep + str(i) + "_BP.tif", to_img.astype(np.uint16))
 
 	print("End of Reconstruction")
 
 
 # 三角関数の計算
-def sincos_calc(n,d_theta):
+def sincos_calc(n, d_theta):
 	sin_arr = np.zeros(n)
 	cos_arr = np.zeros(n)
 	theta = 0.0
@@ -109,49 +122,54 @@ def sincos_calc(n,d_theta):
 
 # 重みづけ関数
 # z座標に関係ないので先にテーブル作っとくべき？
-def create_table(co_x,co_y,co_n,co_z,sin_arr,cos_arr,d,D):
+def create_table(co_x, co_y, co_n, co_z, sin_arr, cos_arr, d, D, pxsize):
 	w_table = np.zeros((co_x, co_y, co_n))
 	u_table = np.zeros((co_x, co_y, co_n))
 	v_table = np.zeros((co_x, co_y, co_n, co_z))
 
-	for e in range(co_z):
-		print("table_calc" + str(e) + "行目")
-		z = co_z / 2 - e
+	# デバッグ用(z軸方向中央付近で試す)
+	# e_list = [45]
+
+	for e in trange(co_z, desc='Create_table', leave=True):
+		# for e in e_list:
+		# print("table_calc" + str(e) + "行目")
+		z = ( co_z / 2 - e ) * pxsize
 
 		for a in range(co_x):
-			x = -1 * co_x / 2 + a
+			x = ( -1 * co_x / 2 + a ) * pxsize
 
 			for b in range(co_y):
-				y = co_y / 2 - b
+				y = ( co_y / 2 - b ) * pxsize
 
 				for c in range(co_n):
 					sin = sin_arr[c]
 					cos = cos_arr[c]
 
 					W = d / (d - x * cos + y * sin)
-					w_table[a,b,c] = np.square(W)
+					w_table[a, b, c] = np.square(W)
 
 					U = D * (x * sin + y * cos) / (d - x * cos + y * sin)
-					if U < co_x / 2 and U > -1 * co_x / 2:
-						u_table[a, b, c] = U + co_x / 2
+					u_ind = U / pxsize
+					if u_ind < co_x / 2 and u_ind > -1 * co_x / 2:
+						u_table[a, b, c] = u_ind + co_x / 2
 					else:
 						u_table[a, b, c] = 2 * co_x
 
 					V = D * z / (d - x * cos + y * sin)
-					if V < co_z / 2 and V > -1 * co_z / 2:
-						v_table[a, b, c, e] = (co_z / 2) - V
+					v_ind = V / pxsize
+					if v_ind < co_z / 2 and v_ind > -1 * co_z / 2:
+						v_table[a, b, c, e] = (co_z / 2) - v_ind
 					else:
 						v_table[a, b, c, e] = 2 * co_z
 
-
-	return w_table,u_table,v_table
+	return w_table, u_table, v_table
 
 
 def Cube_LI(Vol):
 	floor = np.amin(Vol)
 	ceil = np.amax(Vol)
 
-	coefficient = 65535 /(ceil - floor)
+	coefficient = 65535 / (ceil - floor)
 
 	temp = Vol - floor
 

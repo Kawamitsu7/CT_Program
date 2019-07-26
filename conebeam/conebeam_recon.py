@@ -4,6 +4,7 @@ import numpy as np
 import os
 import glob
 import time
+from tqdm import tqdm, trange
 
 import proj_mask as PM
 import Filtering_Proj as Fil_P
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 	start_time = time.time()
 	iter_count = 0
 
-	for f in files:
+	for f in tqdm(files, desc='Filtering', leave=True):
 		# ファイル名の調整
 		f_name, _ = os.path.splitext(os.path.basename(f))
 
@@ -53,8 +54,8 @@ if __name__ == "__main__":
 		cv2.imwrite("fil_img" + os.sep + "Filtered_" + f_name + ".tif", O_im.astype(np.uint16))
 
 		fil_arr.append(filtered)
-		iter_count += 1
-		print(str(iter_count) + "枚目 Filtered")
+		# iter_count += 1
+		# print(str(iter_count) + "枚目 Filtered")
 
 	end_time = time.time()
 	print("project_masking & filtering : {}sec".format(end_time - start_time), file=log)
