@@ -3,3 +3,4 @@
 /conebeam/.idea/
 /conebeam/proj_mask/.idea/
 *.cfg
+/jupyter_notebook/.ipynb_checkpoints/
