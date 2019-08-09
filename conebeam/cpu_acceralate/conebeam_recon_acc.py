@@ -6,7 +6,7 @@ import glob
 import time
 from tqdm import tqdm, trange
 
-import proj_mask as PM
+import proj_mask_acc as PM
 import Filtering_Proj as Fil_P
 import linear_transform as LI
 import ConeBeam_BP_acc as CBBP

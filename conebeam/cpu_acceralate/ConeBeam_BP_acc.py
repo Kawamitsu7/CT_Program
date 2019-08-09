@@ -4,7 +4,7 @@ import numpy as np
 import os
 import math
 from tqdm import tqdm, trange
-
+from numba import jit
 
 def Cone_BP(files):
 	# ----------逆投影に必要なパラメータ準備----------
@@ -48,43 +48,8 @@ def Cone_BP(files):
 	# デバッグ用(z軸方向中央付近で試す)
 	# z_list = [45]
 
-	for z in trange(Volume.shape[2], desc='W-BP', leave=True):
-		# for z in z_list:
-		# print("BP : {z}行目".format(z=z))
-		for x in range(Volume.shape[0]):
-			for y in range(Volume.shape[1]):
-				for n in range(len(files)):
-					proj_val = 0.0
-					diff_u = 0.0
-					diff_v = 0.0
-
-					# 双線形補間
-					if qu_table[x, y, n] < in_f.shape[1] and qv_table[x, y, n, z] < in_f.shape[0]:
-						u_temp = qu_table[x, y, n]
-						v_temp = qv_table[x, y, n, z]
-
-						u = math.floor(u_temp)
-						v = math.floor(v_temp)
-						if u >= in_f.shape[1] - 1 and v >= in_f.shape[0] - 1:
-							proj_val = files[n][in_f.shape[0] - 1, in_f.shape[1] - 1]
-						elif u >= in_f.shape[1] - 1:
-							diff_v = v_temp - v
-							proj_val = (1 - diff_v) * files[n][v, in_f.shape[1] - 1] + diff_v * files[n][
-								v + 1, in_f.shape[1] - 1]
-						elif v >= in_f.shape[0] - 1:
-							diff_u = u_temp - u
-							proj_val = (1 - diff_u) * files[n][in_f.shape[0] - 1, u] + diff_u * files[n][
-								in_f.shape[0] - 1, u + 1]
-						else:
-							diff_u = u_temp - u
-							diff_v = v_temp - v
-							left_up = (1 - diff_u) * (1 - diff_v) * files[n][v, u]
-							left_down = (1 - diff_u) * diff_v * files[n][v + 1, u]
-							right_up = diff_u * (1 - diff_v) * files[n][v, u + 1]
-							right_down = diff_u * diff_v * files[n][v + 1, u + 1]
-							proj_val = left_up + left_down + right_up + right_down
-
-					Volume[x, y, z] += weighten_table[x, y, n] * proj_val
+	#Vol_Calc(files, in_f, Volume, qu_table, qv_table, weighten_table)
+	Vol_Calc_acc(files, in_f, Volume, qu_table, qv_table, weighten_table)
 
 	Normalized = normalize * Volume
 	# print("Max = " + str(np.amax(Normalized)) )
@@ -153,6 +118,8 @@ def create_table(co_x, co_y, co_n, co_z, sin_arr, cos_arr, d, D, pxsize):
 	W = d / denomi
 	w_table = np.square(W)
 
+	print("weight_calculated")
+
 	xsin = x * sin
 	ycos = y * cos
 	xsin = xsin.reshape((xsin.shape[0], 1, xsin.shape[1]))
@@ -162,12 +129,17 @@ def create_table(co_x, co_y, co_n, co_z, sin_arr, cos_arr, d, D, pxsize):
 	U = u_numer / denomi
 
 	u_ind = U * D / pxsize
-	u_table = np.where((u_ind < co_x / 2) and (u_ind > -1 * co_x / 2), u_ind + co_x / 2, 2 * co_x)
+	u_table = np.where(np.abs(u_ind) < co_x / 2, u_ind + co_x / 2, 2 * co_x)
+
+	print("u_calculated")
 
 	z = z.reshape((1, 1, 1, z.shape[0]))
-	V = z / denomi
+	denomi_forth = denomi.reshape((denomi.shape[0],denomi.shape[1],denomi.shape[2],1))
+	V = z / denomi_forth
 	v_ind = V * D / pxsize
-	v_table = np.where((v_ind < co_z / 2) and (v_ind > -1 * co_z / 2), (co_z / 2) - v_ind, 2 * co_z)
+	v_table = np.where(np.abs(v_ind) < co_z / 2, (co_z / 2) - v_ind, 2 * co_z)
+
+	print("v_calculated")
 
 	'''
 	for e in trange(co_z, desc='Create_table', leave=True):
@@ -205,6 +177,77 @@ def create_table(co_x, co_y, co_n, co_z, sin_arr, cos_arr, d, D, pxsize):
 
 	return w_table, u_table, v_table
 
+
+def Vol_Calc_acc(files, in_f, Volume, qu_table, qv_table, weighten_table):
+	u = np.floor(qu_table).astype(int)
+	v = np.floor(qv_table).astype(int)
+
+	u_eliminate = np.where(qu_table < in_f.shape[1], 1, 0)
+	v_eliminate = np.where(qv_table < in_f.shape[0], 1, 0)
+
+	diff_u = qu_table - u
+	diff_v = qv_table - v
+
+	diff_u = np.where(u >= in_f.shape[1]-1, 1, diff_u).reshape((diff_u.shape[0], diff_u.shape[1], diff_u.shape[2], 1))
+	diff_v = np.where(v >= in_f.shape[0]-1, 1, diff_v)
+	u = np.where(u >= in_f.shape[1]-1, u-1, u)
+	v = np.where(v >= in_f.shape[0]-1, v-1, v)
+
+	u = u * u_eliminate
+	v = v * v_eliminate
+
+	u = u.reshape((u.shape[0], u.shape[1], u.shape[2], 1))
+
+	print(type(files[0]))
+
+	for n in trange(len(files)):
+		proj_val = (1 - diff_u[:, :, n, :]) * (1 - diff_v[:, :, n, :]) * files[n][v[:, :, n, :], u[:, :, n, :]]
+		proj_val += (1 - diff_u[:, :, n, :]) * diff_v[:, :, n, :] * files[n][v[:, :, n, :] + 1, u[:, :, n, :]]
+		proj_val += diff_u[:, :, n, :] * (1 - diff_v[:, :, n, :]) * files[n][v[:, :, n, :], u[:, :, n, :] + 1]
+		proj_val += diff_u[:, :, n, :] * diff_v[:, :, n, :] * files[n][v[:, :, n, :] + 1, u[:, :, n, :] + 1]
+
+		proj_val = proj_val * u_eliminate[:, :, n].reshape((u_eliminate.shape[0], u_eliminate.shape[1], 1)) * v_eliminate[:, :, n, :]
+
+		Volume += weighten_table[:, :, n].reshape((weighten_table.shape[0], weighten_table.shape[1], 1)) * proj_val
+
+def Vol_Calc(files, in_f, Volume, qu_table, qv_table, weighten_table):
+	for z in trange(Volume.shape[2], desc='W-BP', leave=True):
+		# for z in z_list:
+		# print("BP : {z}行目".format(z=z))
+		for x in range(Volume.shape[0]):
+			for y in range(Volume.shape[1]):
+				for n in range(len(files)):
+					proj_val = 0.0
+					diff_u = 0.0
+					diff_v = 0.0
+
+					# 双線形補間
+					if qu_table[x, y, n] < in_f.shape[1] and qv_table[x, y, n, z] < in_f.shape[0]:
+						u_temp = qu_table[x, y, n]
+						v_temp = qv_table[x, y, n, z]
+
+						u = math.floor(u_temp)
+						v = math.floor(v_temp)
+						if u >= in_f.shape[1] - 1 and v >= in_f.shape[0] - 1:
+							proj_val = files[n][in_f.shape[0] - 1, in_f.shape[1] - 1]
+						elif u >= in_f.shape[1] - 1:
+							diff_v = v_temp - v
+							proj_val = (1 - diff_v) * files[n][v, in_f.shape[1] - 1] + diff_v * files[n][
+								v + 1, in_f.shape[1] - 1]
+						elif v >= in_f.shape[0] - 1:
+							diff_u = u_temp - u
+							proj_val = (1 - diff_u) * files[n][in_f.shape[0] - 1, u] + diff_u * files[n][
+								in_f.shape[0] - 1, u + 1]
+						else:
+							diff_u = u_temp - u
+							diff_v = v_temp - v
+							left_up = (1 - diff_u) * (1 - diff_v) * files[n][v, u]
+							left_down = (1 - diff_u) * diff_v * files[n][v + 1, u]
+							right_up = diff_u * (1 - diff_v) * files[n][v, u + 1]
+							right_down = diff_u * diff_v * files[n][v + 1, u + 1]
+							proj_val = left_up + left_down + right_up + right_down
+
+					Volume[x, y, z] += weighten_table[x, y, n] * proj_val
 
 def Cube_LI(Vol):
 	floor = np.amin(Vol)
