@@ -25,9 +25,9 @@ def main(src,s,f,isGray):
 	files.sort()
 	#print(files)
 
-	for f in files:
-		input_f = cv2.imread(f,-1)
-		print(str(f))
+	for k in files:
+		input_f = cv2.imread(k,-1)
+		print(str(k))
 		if gray_flg == 1:
 			input_f = cv2.bitwise_not(input_f)
 		input_im.append(input_f[start:(fin+1),:]) #8/6 変更　imreadで転置済み二次元配列に
@@ -38,9 +38,13 @@ def main(src,s,f,isGray):
 		print("Success! : Read Image")
 	
 	os.makedirs("Sinogram", exist_ok = True)
+	sino_arr = []
 	for j in range (fin + 1 - start):
 		sino = Create_Sinogram(input_im,j,start)
 		cv2.imwrite("Sinogram"+ os.sep + str(src) + "_Sino_" + str(start + j).zfill(4) + ".tif", sino.astype(np.uint16))
+		sino_arr.append(sino)
+
+	return sino_arr
 	
 def Create_Sinogram(I_im,j,start):
 	dst = np.zeros((len(I_im),I_im[j].shape[1]))

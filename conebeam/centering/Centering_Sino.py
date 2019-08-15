@@ -12,8 +12,9 @@ import Check as CH
 
 func_time = []
 
-def main(f,f_name,flg,center):
-	print(f_name)
+
+def main(f, flg, center):
+	# print(f_name) <main関数の引数にf_nameを追加のこと>
 
 	global func_time
 	func_time.append(time.time())
@@ -23,21 +24,26 @@ def main(f,f_name,flg,center):
 
 	#中心推定および補正関数の実行
 	if flg == 0:
-		input_f = cv2.imread(f,-1)
-		L,R = center_detect(input_f)
+		input_f = f
+		L, R = center_detect(input_f)
 
-		print((L,R))
+		print((L, R))
 		center = (R+L)/2
 		log = open('centerlog.txt','w')
 		print("~Image Reconstruction : Sino Center log~", file=log)
 		print("-------------\n ===" + str(center), file=log)
 
-	input_f = cv2.imread(f,-1)
-	centered_f = centering(input_f,center)
-	cv2.imwrite("CENT_img" + os.sep + "Centered.tif", centered_f.astype(np.uint16))
+	else:
+		input_f = f
+		centered_f = centering(input_f, center)
+		# cv2.imwrite("CENT_img" + os.sep + "Centered.tif", centered_f.astype(np.uint16))
 
 	func_time.append(time.time())
-	return func_time[3] - func_time[2] + func_time[1] - func_time[0]
+	# return func_time[3] - func_time[2] + func_time[1] - func_time[0]
+	if flg == 0:
+		return center
+	else:
+		return centered_f
 
 #center_detectで得た物体の端のピクセルから中心計算、画像を平行移動して出力
 #入力:画像(numpy行列) 物体の端のピクセル(平均値), 出力:画像(numpy行列)

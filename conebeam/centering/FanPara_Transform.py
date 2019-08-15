@@ -11,14 +11,16 @@ def main(f):
 	Lo = 8/100
 	Ld = 12/100
 
-	input_f = cv2.imread(f,-1)
+	input_f = f
 
 	px_size = 83 / 1000000 * (1280 / input_f.shape[1])
 
 	os.makedirs("FP_Trans", exist_ok = True)
 	para_im = F_to_P_Trans(input_f,Lo,Ld,px_size)
 	
-	cv2.imwrite("FP_Trans"+ os.sep +"F_to_P.tif", para_im.astype(np.uint16))
+	# cv2.imwrite("FP_Trans"+ os.sep +"F_to_P.tif", para_im.astype(np.uint16))
+
+	return para_im
 	
 def F_to_P_Trans(I_im,Lo,Ld,px_size):
 	dst = np.zeros((I_im.shape[0],I_im.shape[1]))

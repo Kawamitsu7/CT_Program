@@ -6,25 +6,20 @@ import os
 import matplotlib.pyplot as plt
 import glob
 
-def main():
 
+def main(f):
 	Lo = 8/100
 	Ld = 12/100
-	px_size = 83 / 1000000
-	
-	#画像の読み込み(ディレクトリに画像は1枚だけ)
-	print("ディレクトリに画像はサイノグラム1枚だけであることを確認してください")
-	folder = input("投影データのディレクトリを選択してください >>>")
-	files = glob.glob(folder + os.sep + "*.tif")
-	files.sort()
-	#print(files)
 
-	input_f = cv2.imread(files[0],-1)
+	input_f = f
+
+	px_size = 83 / 1000000 * (1280 / input_f.shape[1])
 
 	os.makedirs("PF_Trans", exist_ok = True)
 	fan_im = P_to_F_Trans(input_f,Lo,Ld,px_size)
 	
-	cv2.imwrite("PF_Trans"+ os.sep +"PtoF" + os.path.basename(files[0]), fan_im.astype(np.uint16))
+	# cv2.imwrite("PF_Trans"+ os.sep +"PtoF.tif", fan_im.astype(np.uint16))
+	return fan_im
 	
 def P_to_F_Trans(I_im,Lo,Ld,px_size):
 	dst = np.zeros((I_im.shape[0],I_im.shape[1]))

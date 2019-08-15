@@ -6,7 +6,7 @@ import os
 import glob
 
 
-def main(f):
+def main(f, arr):
 	# 距離 : 線源 --> 回転中心
 	Lo = 8 / 100
 
@@ -14,7 +14,7 @@ def main(f):
 	Ld = 12 / 100
 
 	# 画像読み込み : 元画像によって白黒反転の有無を以下の命令から選ぶ
-	input_f = cv2.imread(f, -1)
+	input_f = arr
 
 	# 検出器1個当たりの大きさ
 	px_size = 83 / 1000000 * (1280 / input_f.shape[1])
@@ -33,6 +33,17 @@ def main(f):
 def Masking(I_im, Lo, Ld, px_size):
 	dst = np.zeros((I_im.shape[0], I_im.shape[1]))
 
+	Z = np.arange(dst.shape[0]).reshape((dst.shape[0],1))
+	X = np.arange(dst.shape[1]).reshape((1,dst.shape[1]))
+
+	Z = (Z - (1.0 * Z.shape[0])/2 + 1.0/2) * px_size
+	X = (X - (1.0 * X.shape[0])/2 + 1.0/2) * px_size
+
+	Weight = Lo / np.sqrt(Lo*Lo + np.square(X) + np.square(Z))
+
+	dst = 1.0 * I_im * Weight
+
+	'''
 	for Zp in range(I_im.shape[0]):
 		Z = Calc_coordinate(Zp, px_size, I_im.shape[0])
 
@@ -42,6 +53,7 @@ def Masking(I_im, Lo, Ld, px_size):
 			# 重み計算
 			# Loの代わりにLdを使うべき？
 			dst[Zp, Xp] = 1.0 * I_im[Zp, Xp] * Lo / math.sqrt(Lo*Lo + X*X + Z*Z)
+	'''
 
 	return dst
 

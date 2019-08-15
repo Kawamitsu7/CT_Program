@@ -7,9 +7,15 @@ import time
 from tqdm import tqdm, trange
 
 import proj_mask as PM
+import proj_mask_acc as PM_acc
 import Filtering_Proj as Fil_P
 import linear_transform as LI
 import ConeBeam_BP_acc as CBBP
+
+import list_sinogram as LS
+import FanPara_Transform as F2P
+import Centering_Sino as CS
+import ParaFan_Trans as P2F
 
 # -*- All in One program -*-
 # src_img -> masking -> Filtering -> weighted-BP -> dst_img
@@ -40,12 +46,44 @@ if __name__ == "__main__":
 	start_time = time.time()
 	iter_count = 0
 
+	# サイノグラム作成に必要な変数の設定
+	in_sample = cv2.imread(files[0])
+	start = 0
+	fin = in_sample.shape[0] - 1
+
+	isGray = input("グレースケール反転の有無を選択してください(1:反転する/0:反転しない) << ")
+
+	# <再構成前処理 : 中心合わせ>
+	# 投影画像->サイノグラム
+	temp1 = LS.main(folder, start, fin, isGray)
+
+	# ファンパラ変換
+	temp2 = []
+	for i in tqdm(len(temp1), desc='Fan-Para Trans', leave=True):
+		temp2.append(F2P.main(temp1[i]))
+
+	# パラレルビーム投影の中心合わせ
+	center = CS.main(temp2[len(temp2)/2 - 1], 0, 0)
+	for i in tqdm(len(temp2), desc='Centering', leave=True):
+		temp1[i] = CS.main(temp2[i], 1, center)
+
+	# パラファン変換
+	for i in tqdm(len(temp1), desc='Para-Fan Trans', leave=True):
+		temp2[i] = P2F.main(temp1[i])
+
+	# サイノグラム->投影画像
+	Centered_proj = np.zeros((temp2.shape[0], len(temp2), temp2[0].shape[1]))
+	for i in tqdm(len(temp2), desc='Centering', leave=True):
+		Centered_proj[:, i, :] = temp2[i]
+
+	i = 0
 	for f in tqdm(files, desc='Filtering', leave=True):
+
 		# ファイル名の調整
 		f_name, _ = os.path.splitext(os.path.basename(f))
 
 		# masking
-		masked = PM.main(f)
+		masked = PM_acc.main(f, Centered_proj[i, :, :])
 
 		# filtering
 		O_im = np.zeros((masked.shape[0], masked.shape[1]))
@@ -56,6 +94,8 @@ if __name__ == "__main__":
 		fil_arr.append(filtered)
 		# iter_count += 1
 		# print(str(iter_count) + "枚目 Filtered")
+
+		i += 1
 
 	end_time = time.time()
 	print("project_masking & filtering : {}sec".format(end_time - start_time), file=log)
