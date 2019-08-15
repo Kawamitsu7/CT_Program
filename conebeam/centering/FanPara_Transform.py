@@ -27,7 +27,7 @@ def F_to_P_Trans(I_im,Lo,Ld,px_size):
 	delta_theta = 360 / I_im.shape[0]
 
 	for theta_p in range (I_im.shape[0]):
-		print("FP_trans : " + str(theta_p + 1) + "行目")
+		# print("FP_trans : " + str(theta_p + 1) + "行目")
 	
 		for Xp in range (I_im.shape[1]):
 			Xf = Calc_Xf(Xp, px_size, Lo, Ld, I_im.shape[1])

@@ -25,7 +25,7 @@ def P_to_F_Trans(I_im,Lo,Ld,px_size):
 	dst = np.zeros((I_im.shape[0],I_im.shape[1]))
 
 	for theta_f in range (I_im.shape[0]):
-		print("PF_trans : " + str(theta_f + 1) + "行目")
+		# print("PF_trans : " + str(theta_f + 1) + "行目")
 	
 		for Xf in range (I_im.shape[1]):
 			Xp = Calc_Xp(Xf, px_size, Lo, Ld, I_im.shape[1])
