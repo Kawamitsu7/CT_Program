@@ -72,7 +72,7 @@ if __name__ == "__main__":
 		temp2[i] = P2F.main(temp1[i])
 
 	# サイノグラム->投影画像
-	Centered_proj = np.zeros((temp2.shape[0], len(temp2), temp2[0].shape[1]))
+	Centered_proj = np.zeros((temp2[0].shape[0], len(temp2), temp2[0].shape[1]))
 	for i in trange(len(temp2), desc='Sino -> Proj', leave=True):
 		Centered_proj[:, i, :] = temp2[i]
 
