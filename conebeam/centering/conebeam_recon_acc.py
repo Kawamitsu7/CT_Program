@@ -59,21 +59,21 @@ if __name__ == "__main__":
 
 	# ファンパラ変換
 	temp2 = []
-	for i in tqdm(len(temp1), desc='Fan-Para Trans', leave=True):
+	for i in trange(len(temp1), desc='Fan-Para Trans', leave=True):
 		temp2.append(F2P.main(temp1[i]))
 
 	# パラレルビーム投影の中心合わせ
 	center = CS.main(temp2[len(temp2)/2 - 1], 0, 0)
-	for i in tqdm(len(temp2), desc='Centering', leave=True):
+	for i in trange(len(temp2), desc='Centering', leave=True):
 		temp1[i] = CS.main(temp2[i], 1, center)
 
 	# パラファン変換
-	for i in tqdm(len(temp1), desc='Para-Fan Trans', leave=True):
+	for i in trange(len(temp1), desc='Para-Fan Trans', leave=True):
 		temp2[i] = P2F.main(temp1[i])
 
 	# サイノグラム->投影画像
 	Centered_proj = np.zeros((temp2.shape[0], len(temp2), temp2[0].shape[1]))
-	for i in tqdm(len(temp2), desc='Centering', leave=True):
+	for i in trange(len(temp2), desc='Sino -> Proj', leave=True):
 		Centered_proj[:, i, :] = temp2[i]
 
 	i = 0
