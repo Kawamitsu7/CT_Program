@@ -63,7 +63,7 @@ if __name__ == "__main__":
 		temp2.append(F2P.main(temp1[i]))
 
 	# パラレルビーム投影の中心合わせ
-	center = CS.main(temp2[len(temp2)/2 - 1], 0, 0)
+	center = CS.main(temp2[int(len(temp2)/2 - 1)], 0, 0)
 	for i in trange(len(temp2), desc='Centering', leave=True):
 		temp1[i] = CS.main(temp2[i], 1, center)
 
