@@ -62,7 +62,7 @@ def Cone_BP(files):
 	np.round(Output)
 
 	# 画像書き出し
-	for i in range(Output.shape[2]):
+	for i in trange(Output.shape[2], desc='Write-img', leave=True):
 		# for i in z_list:
 		to_img = Output[:, :, i]
 		cv2.imwrite("CB_BP" + os.sep + str(i) + "_BP.tif", to_img.astype(np.uint16))
@@ -200,7 +200,7 @@ def Vol_Calc_acc(files, in_f, Volume, qu_table, qv_table, weighten_table):
 
 	print(type(files[0]))
 
-	for n in trange(len(files)):
+	for n in trange(len(files), desc='Vol_Calc', leave=True):
 		proj_val = (1 - diff_u[:, :, n, :]) * (1 - diff_v[:, :, n, :]) * files[n][v[:, :, n, :], u[:, :, n, :]]
 		proj_val += (1 - diff_u[:, :, n, :]) * diff_v[:, :, n, :] * files[n][v[:, :, n, :] + 1, u[:, :, n, :]]
 		proj_val += diff_u[:, :, n, :] * (1 - diff_v[:, :, n, :]) * files[n][v[:, :, n, :], u[:, :, n, :] + 1]
