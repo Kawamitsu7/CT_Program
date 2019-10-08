@@ -1,0 +1,6 @@
+distance_source_origin = 300  # [mm]
+distance_origin_detector = 100  # [mm]
+detector_pixel_size = 1.05  # [mm]
+detector_rows = 200  # Vertical size of detector [pixels].
+detector_cols = 200  # Horizontal size of detector [pixels].
+num_of_projections = 180

@@ -1,0 +1,13 @@
+hb = 110  # Height of beam [pixels].
+wb = 40  # Width of beam [pixels].
+hc = 100  # Height of cavity in beam [pixels].
+wc = 30  # Width of cavity in beam [pixels].
+phantom[detector_rows // 2 - hb // 2: detector_rows // 2 + hb // 2,
+detector_cols // 2 - wb // 2: detector_cols // 2 + wb // 2,
+detector_cols // 2 - wb // 2: detector_cols // 2 + wb // 2] = 1
+phantom[detector_rows // 2 - hc // 2: detector_rows // 2 + hc // 2,
+detector_cols // 2 - wc // 2: detector_cols // 2 + wc // 2,
+detector_cols // 2 - wc // 2: detector_cols // 2 + wc // 2] = 0
+phantom[detector_rows // 2 - 5:       detector_rows // 2 + 5,
+detector_cols // 2 + wc // 2: detector_cols // 2 + wb // 2,
+detector_cols // 2 - 5:       detector_cols // 2 + 5] = 0
