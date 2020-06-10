@@ -101,7 +101,7 @@ def center_detect(I_im):
 				l_temp[m] = j+1
 			if l_temp[m] != -1 and bi_im[m,j+1] - bi_im[m,j] < -200 :
 				r_temp[m] = j
-		print((str(m) + "行目",l_temp[m],r_temp[m]))
+		#print((str(m) + "行目",l_temp[m],r_temp[m]))
 
 	l_ave = sum(l_temp)/len(l_temp)
 	r_ave = sum(r_temp)/len(r_temp)

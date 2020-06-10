@@ -11,13 +11,13 @@ def main(src,s,f,isGray):
 	#画像の読み込み
 	folder = src
 
-	print("画像書き出しを開始するスライスを指定してください(0~画像サイズ-1)")
+	#print("画像書き出しを開始するスライスを指定してください(0~画像サイズ-1)")
 	start = int(s)
-	print("画像書き出しを終了するスライスを指定してください(0~画像サイズ-1)")
+	#print("画像書き出しを終了するスライスを指定してください(0~画像サイズ-1)")
 	fin = int(f)
 	print(str(start) + "枚目から" + str(fin) + "枚目までを出力します")
 
-	print("グレースケール反転の有無を選択してください(1:反転する/0:反転しない)")
+	#print("グレースケール反転の有無を選択してください(1:反転する/0:反転しない)")
 	gray_flg = int(isGray)
 
 	input_im = []
@@ -28,12 +28,12 @@ def main(src,s,f,isGray):
 
 	for k in files:
 		input_f = cv2.imread(k,-1)
-		print(str(k))
+		#print(str(k))
 		if gray_flg == 1:
 			input_f = cv2.bitwise_not(input_f)
 		input_im.append(input_f[start:(fin+1),:]) #8/6 変更　imreadで転置済み二次元配列に
 
-	if len(input_im) == 0:
+	if len(input_im) != len(files):
 		print("Failed!")
 	else:
 		print("Success! : Read Image")
