@@ -1,0 +1,259 @@
+PS C:\Users\ct01\Documents\GitHub\CT_Program\workspace\BP> nvprof python .\Centering_FDK_astra.py
+
+*** Feld-Kamp法再構成プログラム(by astra toolbox) ***
+[入力]投影画像フォルダの名前を指定 >> test_ph
+[出力]断面画像フォルダの名前を指定 >> test_ph_out
+グレースケール反転の有無を選択してください(1:反転する/0:反転しない) >> 0
+179
+{8.0, 0.664, 180.0, 160.0}
+0枚目から179枚目までを出力します
+Success! : Read Image
+Fan-Para Trans: 100%|███████████████████████████████████████████████████████████████| 180/180 [00:00<00:00, 200.90it/s]
+Centering前の画像で、ピクセル値プロファイルを確認してください
+中心推定のための2値化閾値を入力 >>30
+(55.65555555555556, 104.03888888888889)
+Centering: 100%|████████████████████████████████████████████████████████████████████| 180/180 [00:00<00:00, 576.95it/s]
+Para-Fan Trans: 100%|███████████████████████████████████████████████████████████████| 180/180 [00:00<00:00, 230.79it/s]
+Sino -> Proj: 100%|████████████████████████████████████████████████████████████████| 180/180 [00:00<00:00, 4994.94it/s]
+(180, 360, 160)
+CENT_Proj_Check: 100%|█████████████████████████████████████████████████████████████| 360/360 [00:00<00:00, 1216.35it/s]
+pass here
+==2436== NVPROF is profiling process 2436, command: python .\Centering_FDK_astra.py
+==2436== Warning: Unified Memory Profiling is not supported on the current configuration because a pair of devices without peer-to-peer support is detected on this multi-GPU setup. When peer mappings are not available, system falls back to using zero-copy memory. It can cause kernels, which access unified memory, to run slower. More details can be found at: http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#um-managed-memory
+<fft>   Memcpy time(ave.):      0.088094        [ms]
+<fft>   Memcpy time(ave.):      0.052751        [ms]
+<fft>   Memcpy time(ave.):      0.056278        [ms]
+<fft>   Memcpy time(ave.):      0.051854        [ms]
+<fft>   Memcpy time(ave.):      0.049641        [ms]
+<fft>   Memcpy time(ave.):      0.060359        [ms]
+<fft>   Memcpy time(ave.):      0.054350        [ms]
+<fft>   Memcpy time(ave.):      0.052930        [ms]
+<fft>   Memcpy time(ave.):      0.052954        [ms]
+<fft>   Memcpy time(ave.):      0.051172        [ms]
+<fft>   Memcpy time(ave.):      0.055011        [ms]
+<fft>   Memcpy time(ave.):      0.053501        [ms]
+<fft>   Memcpy time(ave.):      0.052918        [ms]
+<fft>   Memcpy time(ave.):      0.053234        [ms]
+<fft>   Memcpy time(ave.):      0.051438        [ms]
+<fft>   Memcpy time(ave.):      0.052348        [ms]
+<fft>   Memcpy time(ave.):      0.052795        [ms]
+<fft>   Memcpy time(ave.):      0.055082        [ms]
+<fft>   Memcpy time(ave.):      0.055602        [ms]
+<fft>   Memcpy time(ave.):      0.054854        [ms]
+<fft>   Memcpy time(ave.):      0.054604        [ms]
+<fft>   Memcpy time(ave.):      0.055261        [ms]
+<fft>   Memcpy time(ave.):      0.055059        [ms]
+<fft>   Memcpy time(ave.):      0.055633        [ms]
+<fft>   Memcpy time(ave.):      0.054924        [ms]
+<fft>   Memcpy time(ave.):      0.055797        [ms]
+<fft>   Memcpy time(ave.):      0.054976        [ms]
+<fft>   Memcpy time(ave.):      0.054656        [ms]
+<fft>   Memcpy time(ave.):      0.054671        [ms]
+<fft>   Memcpy time(ave.):      0.054779        [ms]
+<fft>   Memcpy time(ave.):      0.051999        [ms]
+<fft>   Memcpy time(ave.):      0.054456        [ms]
+<fft>   Memcpy time(ave.):      0.049910        [ms]
+<fft>   Memcpy time(ave.):      0.051251        [ms]
+<fft>   Memcpy time(ave.):      0.051824        [ms]
+<fft>   Memcpy time(ave.):      0.051201        [ms]
+<fft>   Memcpy time(ave.):      0.051046        [ms]
+<fft>   Memcpy time(ave.):      0.051579        [ms]
+<fft>   Memcpy time(ave.):      0.052588        [ms]
+<fft>   Memcpy time(ave.):      0.053439        [ms]
+<fft>   Memcpy time(ave.):      0.054074        [ms]
+<fft>   Memcpy time(ave.):      0.085222        [ms]
+<fft>   Memcpy time(ave.):      0.054828        [ms]
+<fft>   Memcpy time(ave.):      0.052974        [ms]
+<fft>   Memcpy time(ave.):      0.052788        [ms]
+<fft>   Memcpy time(ave.):      0.084188        [ms]
+<fft>   Memcpy time(ave.):      0.094809        [ms]
+<fft>   Memcpy time(ave.):      0.066841        [ms]
+<fft>   Memcpy time(ave.):      0.054917        [ms]
+<fft>   Memcpy time(ave.):      0.057313        [ms]
+<fft>   Memcpy time(ave.):      0.096310        [ms]
+<fft>   Memcpy time(ave.):      0.085927        [ms]
+<fft>   Memcpy time(ave.):      0.052391        [ms]
+<fft>   Memcpy time(ave.):      0.093198        [ms]
+<fft>   Memcpy time(ave.):      0.074362        [ms]
+<fft>   Memcpy time(ave.):      0.055399        [ms]
+<fft>   Memcpy time(ave.):      0.077149        [ms]
+<fft>   Memcpy time(ave.):      0.067321        [ms]
+<fft>   Memcpy time(ave.):      0.112861        [ms]
+<fft>   Memcpy time(ave.):      0.095326        [ms]
+<fft>   Memcpy time(ave.):      0.056688        [ms]
+<fft>   Memcpy time(ave.):      0.054091        [ms]
+<fft>   Memcpy time(ave.):      0.085726        [ms]
+<fft>   Memcpy time(ave.):      0.087571        [ms]
+<fft>   Memcpy time(ave.):      0.052362        [ms]
+<fft>   Memcpy time(ave.):      0.053266        [ms]
+<fft>   Memcpy time(ave.):      0.064766        [ms]
+<fft>   Memcpy time(ave.):      0.051487        [ms]
+<fft>   Memcpy time(ave.):      0.050401        [ms]
+<fft>   Memcpy time(ave.):      0.049489        [ms]
+<fft>   Memcpy time(ave.):      0.054354        [ms]
+<fft>   Memcpy time(ave.):      0.052748        [ms]
+<fft>   Memcpy time(ave.):      0.049360        [ms]
+<fft>   Memcpy time(ave.):      0.049288        [ms]
+<fft>   Memcpy time(ave.):      0.113526        [ms]
+<fft>   Memcpy time(ave.):      0.053719        [ms]
+<fft>   Memcpy time(ave.):      0.055698        [ms]
+<fft>   Memcpy time(ave.):      0.055114        [ms]
+<fft>   Memcpy time(ave.):      0.055846        [ms]
+<fft>   Memcpy time(ave.):      0.054964        [ms]
+<fft>   Memcpy time(ave.):      0.057209        [ms]
+<fft>   Memcpy time(ave.):      0.057857        [ms]
+<fft>   Memcpy time(ave.):      0.055357        [ms]
+<fft>   Memcpy time(ave.):      0.054617        [ms]
+<fft>   Memcpy time(ave.):      0.056249        [ms]
+<fft>   Memcpy time(ave.):      0.054238        [ms]
+<fft>   Memcpy time(ave.):      0.055956        [ms]
+<fft>   Memcpy time(ave.):      0.053498        [ms]
+<fft>   Memcpy time(ave.):      0.054489        [ms]
+<fft>   Memcpy time(ave.):      0.052633        [ms]
+<fft>   Memcpy time(ave.):      0.052272        [ms]
+<fft>   Memcpy time(ave.):      0.051709        [ms]
+<fft>   Memcpy time(ave.):      0.054193        [ms]
+<fft>   Memcpy time(ave.):      0.051921        [ms]
+<fft>   Memcpy time(ave.):      0.052090        [ms]
+<fft>   Memcpy time(ave.):      0.054698        [ms]
+<fft>   Memcpy time(ave.):      0.054736        [ms]
+<fft>   Memcpy time(ave.):      0.056490        [ms]
+<fft>   Memcpy time(ave.):      0.054817        [ms]
+<fft>   Memcpy time(ave.):      0.055210        [ms]
+<fft>   Memcpy time(ave.):      0.055302        [ms]
+<fft>   Memcpy time(ave.):      0.054949        [ms]
+<fft>   Memcpy time(ave.):      0.055197        [ms]
+<fft>   Memcpy time(ave.):      0.056120        [ms]
+<fft>   Memcpy time(ave.):      0.054693        [ms]
+<fft>   Memcpy time(ave.):      0.055307        [ms]
+<fft>   Memcpy time(ave.):      0.055378        [ms]
+<fft>   Memcpy time(ave.):      0.056038        [ms]
+<fft>   Memcpy time(ave.):      0.054306        [ms]
+<fft>   Memcpy time(ave.):      0.053973        [ms]
+<fft>   Memcpy time(ave.):      0.054715        [ms]
+<fft>   Memcpy time(ave.):      0.054303        [ms]
+<fft>   Memcpy time(ave.):      0.052186        [ms]
+<fft>   Memcpy time(ave.):      0.052873        [ms]
+<fft>   Memcpy time(ave.):      0.051232        [ms]
+<fft>   Memcpy time(ave.):      0.054981        [ms]
+<fft>   Memcpy time(ave.):      0.055173        [ms]
+<fft>   Memcpy time(ave.):      0.054650        [ms]
+<fft>   Memcpy time(ave.):      0.054994        [ms]
+<fft>   Memcpy time(ave.):      0.054846        [ms]
+<fft>   Memcpy time(ave.):      0.057049        [ms]
+<fft>   Memcpy time(ave.):      0.054544        [ms]
+<fft>   Memcpy time(ave.):      0.055198        [ms]
+<fft>   Memcpy time(ave.):      0.054716        [ms]
+<fft>   Memcpy time(ave.):      0.055776        [ms]
+<fft>   Memcpy time(ave.):      0.055469        [ms]
+<fft>   Memcpy time(ave.):      0.055089        [ms]
+<fft>   Memcpy time(ave.):      0.055872        [ms]
+<fft>   Memcpy time(ave.):      0.056345        [ms]
+<fft>   Memcpy time(ave.):      0.054316        [ms]
+<fft>   Memcpy time(ave.):      0.054167        [ms]
+<fft>   Memcpy time(ave.):      0.052448        [ms]
+<fft>   Memcpy time(ave.):      0.053753        [ms]
+<fft>   Memcpy time(ave.):      0.053986        [ms]
+<fft>   Memcpy time(ave.):      0.051626        [ms]
+<fft>   Memcpy time(ave.):      0.054239        [ms]
+<fft>   Memcpy time(ave.):      0.055517        [ms]
+<fft>   Memcpy time(ave.):      0.053826        [ms]
+<fft>   Memcpy time(ave.):      0.056457        [ms]
+<fft>   Memcpy time(ave.):      0.056484        [ms]
+<fft>   Memcpy time(ave.):      0.054392        [ms]
+<fft>   Memcpy time(ave.):      0.054872        [ms]
+<fft>   Memcpy time(ave.):      0.054889        [ms]
+<fft>   Memcpy time(ave.):      0.053946        [ms]
+<fft>   Memcpy time(ave.):      0.053970        [ms]
+<fft>   Memcpy time(ave.):      0.055034        [ms]
+<fft>   Memcpy time(ave.):      0.054072        [ms]
+<fft>   Memcpy time(ave.):      0.054352        [ms]
+<fft>   Memcpy time(ave.):      0.054571        [ms]
+<fft>   Memcpy time(ave.):      0.054544        [ms]
+<fft>   Memcpy time(ave.):      0.055270        [ms]
+<fft>   Memcpy time(ave.):      0.055508        [ms]
+<fft>   Memcpy time(ave.):      0.052352        [ms]
+<fft>   Memcpy time(ave.):      0.052728        [ms]
+<fft>   Memcpy time(ave.):      0.052493        [ms]
+<fft>   Memcpy time(ave.):      0.051309        [ms]
+<fft>   Memcpy time(ave.):      0.052611        [ms]
+<fft>   Memcpy time(ave.):      0.051800        [ms]
+<fft>   Memcpy time(ave.):      0.054930        [ms]
+<fft>   Memcpy time(ave.):      0.054570        [ms]
+<fft>   Memcpy time(ave.):      0.055308        [ms]
+<fft>   Memcpy time(ave.):      0.056565        [ms]
+<fft>   Memcpy time(ave.):      0.054549        [ms]
+<fft>   Memcpy time(ave.):      0.057643        [ms]
+<fft>   Memcpy time(ave.):      0.058450        [ms]
+<fft>   Memcpy time(ave.):      0.051847        [ms]
+<fft>   Memcpy time(ave.):      0.057521        [ms]
+<fft>   Memcpy time(ave.):      0.056931        [ms]
+<fft>   Memcpy time(ave.):      0.057927        [ms]
+<fft>   Memcpy time(ave.):      0.057045        [ms]
+<fft>   Memcpy time(ave.):      0.054815        [ms]
+<fft>   Memcpy time(ave.):      0.056331        [ms]
+<fft>   Memcpy time(ave.):      0.057622        [ms]
+<fft>   Memcpy time(ave.):      0.054383        [ms]
+<fft>   Memcpy time(ave.):      0.051455        [ms]
+<fft>   Memcpy time(ave.):      0.054966        [ms]
+<fft>   Memcpy time(ave.):      0.051608        [ms]
+<fft>   Memcpy time(ave.):      0.054288        [ms]
+<fft>   Memcpy time(ave.):      0.053388        [ms]
+<fft>   Memcpy time(ave.):      0.051230        [ms]
+<fdk>sum time : 9436.000000[ms]
+<fdk>loop times : 64800[times]
+<fdk>once operation's time(ave.) : 0.145617[ms]
+0.019331042
+-0.007439771
+Img_Output: 100%|███████████████████████████████████████████████████████████████████| 180/180 [00:00<00:00, 265.88it/s]
+==2436== Profiling application: python .\Centering_FDK_astra.py
+==2436== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+ 76.86%  128.43ms    129600     990ns     896ns  1.8880us  [CUDA memcpy DtoD]
+ 10.63%  17.762ms        12  1.4802ms  542.66us  1.7702ms  void astraCUDA3d::dev_cone_BP<bool=1>(void*, unsigned int, int, int, astraCUDA3d::SDimensions3D, float)
+  4.22%  7.0441ms         3  2.3480ms  2.1120us  6.9802ms  [CUDA memcpy HtoD]
+  1.68%  2.8069ms         1  2.8069ms  2.8069ms  2.8069ms  [CUDA memcpy DtoH]
+  1.31%  2.1968ms       361  6.0850us  4.1600us  125.70us  [CUDA memset]
+  0.95%  1.5809ms       180  8.7820us  8.1290us  10.145us  __nv_static_73__60_tmpxft_00008b38_00000000_16_spRealComplex_compute_60_cpp1_ii_1f28721c__ZN13spRealComplex23preprocessC2C_kernelMemIjfL9fftAxii_t1EEEvP7ComplexIT0_EPKS4_T_15coordDivisors_tIS8_E7coord_tIS8_ESC_S8_S3_10callback_t
+  0.91%  1.5196ms       180  8.4420us  7.1360us  10.464us  void spVector0256B::kernelTex<unsigned int, float, fftDirection_t=-1, unsigned int=8, unsigned int=5, LUT, ALL, WRITEBACK>(kernel_parameters_t<fft_tex_t, unsigned int, float>)
+  0.81%  1.3514ms       180  7.5070us  6.0800us  8.1920us  astraCUDA::rescaleInverseFourier_kernel(int, int, float*)
+  0.78%  1.3072ms       180  7.2620us  7.1360us  7.4240us  void spVector0256B::kernelTex<unsigned int, float, fftDirection_t=1, unsigned int=8, unsigned int=5, LUT, ALL, WRITEBACK>(kernel_parameters_t<fft_tex_t, unsigned int, float>)
+  0.74%  1.2409ms       180  6.8940us  5.1200us  10.240us  astraCUDA::applyFilter_kernel(int, int, float2*, float2*)
+  0.64%  1.0709ms       180  5.9490us  5.2480us  6.4320us  __nv_static_73__60_tmpxft_00008b38_00000000_16_spRealComplex_compute_60_cpp1_ii_1f28721c__ZN13spRealComplex24postprocessC2C_kernelMemIjfL9fftAxii_t1EEEvP7ComplexIT0_EPKS4_T_15coordDivisors_tIS8_E7coord_tIS8_ESC_S8_S3_10callback_t
+  0.25%  411.08us         1  411.08us  411.08us  411.08us  [CUDA memcpy DtoA]
+  0.23%  385.57us         1  385.57us  385.57us  385.57us  astraCUDA3d::devFDK_preweight(void*, unsigned int, unsigned int, unsigned int, float, float, float, float, float, float, astraCUDA3d::SDimensions3D)
+
+==2436== API calls:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+ 62.28%  6.08888s    131048  46.462us  9.2000us  17.831ms  cudaThreadSynchronize
+ 12.75%  1.24679s      1084  1.1502ms     900ns  1.12965s  cudaFree
+ 12.42%  1.21455s    129601  9.3710us  8.0000us  122.90us  cudaMemcpy
+  6.00%  586.63ms       361  1.6250ms  701.80us  10.208ms  cudaGetDeviceProperties
+  4.27%  417.89ms         9  46.432ms  13.800us  417.73ms  cudaMemGetInfo
+  1.56%  152.05ms       722  210.60us  10.000us  6.2168ms  cudaMalloc
+  0.24%  23.047ms       720  32.010us  14.600us  119.00us  cudaLaunchKernel
+  0.10%  10.248ms         3  3.4160ms  51.100us  7.2055ms  cudaMemcpy3D
+  0.08%  7.4690ms     11880     628ns     300ns  19.200us  cudaFuncSetCacheConfig
+  0.07%  6.6057ms       360  18.349us  10.900us  66.700us  cudaMemset
+  0.06%  5.5475ms       373  14.872us  10.100us  47.600us  cudaLaunch
+  0.05%  4.6341ms         2  2.3171ms  1.6009ms  3.0332ms  cudaMalloc3D
+  0.04%  4.1465ms       356  11.647us     100ns  620.10us  cuDeviceGetAttribute
+  0.02%  1.8752ms       360  5.2080us  3.3000us  28.200us  cudaBindTexture
+  0.02%  1.7950ms      2521     712ns     300ns  15.200us  cudaGetDevice
+  0.01%  1.2772ms         4  319.30us  167.10us  563.90us  cuDeviceGetName
+  0.01%  1.0412ms         1  1.0412ms  1.0412ms  1.0412ms  cudaMalloc3DArray
+  0.01%  586.10us       360  1.6280us  1.1000us  66.500us  cudaUnbindTexture
+  0.01%  526.80us         1  526.80us  526.80us  526.80us  cudaMemcpyToSymbol
+  0.00%  340.30us       373     912ns     200ns  6.3000us  cudaConfigureCall
+  0.00%  334.40us      1343     248ns     100ns  1.1000us  cudaSetupArgument
+  0.00%  309.80us         1  309.80us  309.80us  309.80us  cudaFreeArray
+  0.00%  270.40us       720     375ns     100ns  1.4000us  cudaPeekAtLastError
+  0.00%  194.70us       720     270ns     100ns     900ns  cudaGetLastError
+  0.00%  83.100us         4  20.775us  10.100us  45.500us  cuDeviceTotalMem
+  0.00%  47.100us         1  47.100us  47.100us  47.100us  cudaMemset3D
+  0.00%  11.600us         1  11.600us  11.600us  11.600us  cudaBindTextureToArray
+  0.00%  4.6000us         4  1.1500us     300ns  3.0000us  cuDeviceGetCount
+  0.00%  3.6000us         8     450ns     100ns     900ns  cuDeviceGet
+  0.00%  1.1000us         1  1.1000us  1.1000us  1.1000us  cuInit
+  0.00%  1.0000us         1  1.0000us  1.0000us  1.0000us  cuDriverGetVersion
+  0.00%     400ns         2     200ns     200ns     200ns  cudaCreateChannelDesc
